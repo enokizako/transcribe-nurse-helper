@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import TranscriptionButton from "@/components/TranscriptionButton";
@@ -93,14 +92,19 @@ const Index: React.FC = () => {
 
     try {
       let formattedResult = "";
-      
+
       // Google Generative AI が設定されていれば使用
       if (googleAIService.isConfigured()) {
         try {
-          formattedResult = await googleAIService.generateResponse(prompt, text);
+          formattedResult = await googleAIService.generateResponse(
+            prompt,
+            text
+          );
         } catch (error) {
           console.error("Google AI エラー:", error);
-          toast.error("Google AI による処理に失敗しました。フォールバック処理を実行します。");
+          toast.error(
+            "Google AI による処理に失敗しました。フォールバック処理を実行します。"
+          );
           // エラーの場合はフォールバック処理を実行
           formattedResult = formatWithSOAP(text, prompt);
         }
@@ -108,7 +112,7 @@ const Index: React.FC = () => {
         // Google AI が設定されていない場合は従来の処理
         formattedResult = formatWithSOAP(text, prompt);
       }
-      
+
       setResult(formattedResult);
     } catch (error) {
       console.error("整形エラー:", error);
@@ -193,7 +197,7 @@ const Index: React.FC = () => {
       <footer className="w-full py-6 border-t border-border bg-card/50 backdrop-blur-sm">
         <div className="container text-center">
           <p className="text-sm text-muted-foreground">
-            看護記録支援ツール プロトタイプ
+            看護メモ支援ツールのプロトタイプです。ChromeもしくはEdgeブラウザを使用してください。
           </p>
         </div>
       </footer>

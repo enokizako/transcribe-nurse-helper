@@ -1,8 +1,7 @@
-
-import React, { useState } from 'react';
-import { Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import SettingsDialog from './SettingsDialog';
+import React, { useState } from "react";
+import { Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import SettingsDialog from "./SettingsDialog";
 
 const Header: React.FC = () => {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -11,11 +10,14 @@ const Header: React.FC = () => {
     <header className="py-6 w-full animate-fade-in">
       <div className="container flex justify-between items-center">
         <div className="flex flex-col">
-          <h1 className="text-2xl font-medium">看護記録支援ツール</h1>
-          <p className="text-sm text-muted-foreground">音声入力から SOAP 形式の看護記録を自動生成</p>
+          <h1 className="text-2xl font-medium">看護メモ支援ツール</h1>
+          <p className="text-sm text-muted-foreground">
+            音声入力から SOAP
+            形式のメモを自動生成します。部屋とベットナンバーを最初に確認してください。
+          </p>
         </div>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="icon"
           onClick={() => setSettingsOpen(true)}
           aria-label="設定"
@@ -24,7 +26,7 @@ const Header: React.FC = () => {
         </Button>
       </div>
       <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mt-6 w-full" />
-      
+
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </header>
   );
