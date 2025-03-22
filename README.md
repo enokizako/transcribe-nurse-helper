@@ -1,3 +1,12 @@
+# memo
+
+## local dev
+
+$ bun install
+$ vite
+
+##
+
 # Welcome to your Lovable project
 
 ## Project info
