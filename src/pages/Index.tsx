@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import TranscriptionButton from "@/components/TranscriptionButton";
@@ -5,6 +6,7 @@ import TranscriptionArea from "@/components/TranscriptionArea";
 import PromptArea from "@/components/PromptArea";
 import ResultArea from "@/components/ResultArea";
 import TranscriptionService from "@/utils/transcriptionService";
+import { googleAIService } from "@/utils/googleAIService";
 import { toast } from "sonner";
 
 const defaultPrompt = `渡されたテキストを元に看護記録をSOAP形式に要約してまとめてください。
@@ -90,17 +92,28 @@ const Index: React.FC = () => {
     setIsProcessing(true);
 
     try {
-      // ここでフォーマットの処理を実行
-      // 本来はここでAPIへのリクエストを行うが、プロトタイプではダミーの処理としてタイマーを使用
-      setTimeout(() => {
-        // 簡易的なフォーマット例（実際にはAIモデルが処理）
-        const formattedResult = formatWithSOAP(text, prompt);
-        setResult(formattedResult);
-        setIsProcessing(false);
-      }, 1500);
+      let formattedResult = "";
+      
+      // Google Generative AI が設定されていれば使用
+      if (googleAIService.isConfigured()) {
+        try {
+          formattedResult = await googleAIService.generateResponse(prompt, text);
+        } catch (error) {
+          console.error("Google AI エラー:", error);
+          toast.error("Google AI による処理に失敗しました。フォールバック処理を実行します。");
+          // エラーの場合はフォールバック処理を実行
+          formattedResult = formatWithSOAP(text, prompt);
+        }
+      } else {
+        // Google AI が設定されていない場合は従来の処理
+        formattedResult = formatWithSOAP(text, prompt);
+      }
+      
+      setResult(formattedResult);
     } catch (error) {
       console.error("整形エラー:", error);
       toast.error("テキストの整形に失敗しました");
+    } finally {
       setIsProcessing(false);
     }
   };
