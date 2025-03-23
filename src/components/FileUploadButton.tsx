@@ -1,3 +1,4 @@
+
 import React, { useRef } from "react";
 import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,12 +44,13 @@ const FileUploadButton: React.FC<FileUploadButtonProps> = ({
       <Button
         onClick={handleClick}
         variant="outline"
-        className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 ${
+        className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 h-[48px] ${
           isProcessing ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={isProcessing}
       >
         <Upload className="w-5 h-5" />
+        <span>ファイル選択</span>
       </Button>
       <input
         type="file"
