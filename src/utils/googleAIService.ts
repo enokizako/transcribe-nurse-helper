@@ -58,6 +58,42 @@ class GoogleAIService {
       throw error;
     }
   }
+
+  public async transcribeAudio(prompt: string, audioDataUrl: string): Promise<string> {
+    if (!this.isConfigured()) {
+      throw new Error("Google AI service is not configured");
+    }
+
+    try {
+      // Extract base64 data from the data URL
+      const base64Data = audioDataUrl.split(',')[1];
+      
+      // For audio processing, we need to use multimodal input with the audio file
+      // For Gemini models that support audio, we'd use this approach
+      const parts = [
+        {
+          text: prompt
+        },
+        {
+          inlineData: {
+            data: base64Data,
+            mimeType: "audio/mpeg" // Adjust based on actual file type
+          }
+        }
+      ];
+
+      // Generate content with the prompt and audio data
+      const result = await this.model.generateContent({
+        contents: [{ role: "user", parts }],
+      });
+      
+      const response = result.response;
+      return response.text();
+    } catch (error) {
+      console.error("Google AI audio transcription error:", error);
+      throw error;
+    }
+  }
 }
 
 export const googleAIService = new GoogleAIService();

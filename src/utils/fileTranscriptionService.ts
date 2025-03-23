@@ -1,12 +1,53 @@
-// Using browser's built-in speech recognition as a fallback
-// In a production environment, this would be replaced with a proper audio transcription API
+
+import { googleAIService } from "@/utils/googleAIService";
+
 class FileTranscriptionService {
-  // This is a simple mock implementation for the prototype
-  // In a real application, you would use a proper API like Google Speech-to-Text or similar
+  // Using Google Gemini for transcription when configured, otherwise use mock
   public async transcribeFile(file: File): Promise<string> {
+    try {
+      // Check if Google AI is configured
+      if (googleAIService.isConfigured()) {
+        return await this.transcribeWithGemini(file);
+      } else {
+        // Fall back to mock implementation
+        return await this.mockTranscription(file);
+      }
+    } catch (error) {
+      console.error("Transcription error:", error);
+      throw new Error("ファイルの文字起こしに失敗しました");
+    }
+  }
+
+  private async transcribeWithGemini(file: File): Promise<string> {
+    try {
+      // Read the file as data URL for processing
+      const fileDataUrl = await this.readFileAsDataURL(file);
+      
+      // Prepare the prompt for Gemini
+      const prompt = "次の看護師の病棟での会話を、日本語で発言内容そのまま文字起こししてください。";
+      
+      // Call Google AI service with the prompt and audio file
+      const transcription = await googleAIService.transcribeAudio(prompt, fileDataUrl);
+      
+      return transcription;
+    } catch (error) {
+      console.error("Gemini transcription error:", error);
+      throw error;
+    }
+  }
+
+  private readFileAsDataURL(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
-      // Simple mock for prototyping
-      // Read the file and pretend we're transcribing it
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Fallback mock implementation for prototype or when Google AI is not configured
+  private async mockTranscription(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
       reader.onload = (event) => {
@@ -45,7 +86,6 @@ SpO2は98%で安定しています。
       };
 
       // Start reading the file as text
-      // In a real implementation, you'd send the file to an API
       reader.readAsText(file);
     });
   }
