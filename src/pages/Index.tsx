@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import TranscriptionButton from "@/components/TranscriptionButton";
+import FileUploadButton from "@/components/FileUploadButton";
 import TranscriptionArea from "@/components/TranscriptionArea";
 import PromptArea from "@/components/PromptArea";
 import ResultArea from "@/components/ResultArea";
 import TranscriptionService from "@/utils/transcriptionService";
+import FileTranscriptionService from "@/utils/fileTranscriptionService";
 import { googleAIService } from "@/utils/googleAIService";
 import { toast } from "sonner";
 
@@ -82,6 +84,26 @@ const Index: React.FC = () => {
       console.error("文字起こし停止エラー:", error);
       toast.error("文字起こしの停止に失敗しました");
       setIsRecording(false);
+    }
+  };
+
+  const handleFileSelect = async (file: File) => {
+    try {
+      setIsProcessing(true);
+      setResult("");
+      toast.success(`ファイル「${file.name}」の文字起こしを開始しました`);
+      
+      const transcriptionText = await FileTranscriptionService.transcribeFile(file);
+      setTranscription(transcriptionText);
+      
+      if (transcriptionText.trim()) {
+        formatTranscription(transcriptionText);
+      }
+    } catch (error) {
+      console.error("ファイル文字起こしエラー:", error);
+      toast.error("ファイルの文字起こしに失���しました");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -179,11 +201,15 @@ const Index: React.FC = () => {
       <Header />
 
       <main className="container py-8 flex flex-col items-center space-y-8 flex-1">
-        <div className="flex justify-center w-full">
+        <div className="flex justify-center w-full gap-4">
           <TranscriptionButton
             onStart={startTranscription}
             onStop={stopTranscription}
             isRecording={isRecording}
+          />
+          <FileUploadButton 
+            onFileSelect={handleFileSelect}
+            isProcessing={isProcessing}
           />
         </div>
 
