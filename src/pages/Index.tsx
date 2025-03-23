@@ -13,10 +13,11 @@ import { toast } from "sonner";
 const defaultPrompt = `渡されたテキストを元に看護記録をSOAP形式に要約してまとめてください。
 最初に部屋番号とベッドナンバーを記載してからSOAP形式で記述します。
 SOAP形式の記載方法は下記に従ってください。
-SOAPのすべての項目を埋める必要はなく、必要なもののみ書き出してください。
+SOAPのすべての項目を埋める必要はなく、必要な内容のみ書き出してください。
 SOAPに分類されない項目はカットしてください。
 Sは主観的データ(Subjective Data)
-患者さんの発した言葉。要約してもよいが、患者さんの発言以外を記録するのはNG!
+患者さんの発した言葉。要約してもよいが、患者さんの発言以外を記録するのはNGです
+伝聞や復唱だとしても、患者さんの発言として記載してください
 例) 分かりました。 OKです。 など
 Oは客観的データ(Objective Data)
 観察したこと。目で見たことだけでなく、 触診や聴診で得られたデータ・バイタルサインや検査データなども含まれる。 
@@ -92,16 +93,18 @@ const Index: React.FC = () => {
       setIsProcessing(true);
       setResult("");
       toast.success(`ファイル「${file.name}」の文字起こしを開始しました`);
-      
-      const transcriptionText = await FileTranscriptionService.transcribeFile(file);
+
+      const transcriptionText = await FileTranscriptionService.transcribeFile(
+        file
+      );
       setTranscription(transcriptionText);
-      
+
       if (transcriptionText.trim()) {
         formatTranscription(transcriptionText);
       }
     } catch (error) {
       console.error("ファイル文字起こしエラー:", error);
-      toast.error("ファイルの文字起こしに失���しました");
+      toast.error("ファイルの文字起こしに失敗しました");
     } finally {
       setIsProcessing(false);
     }
@@ -207,7 +210,7 @@ const Index: React.FC = () => {
             onStop={stopTranscription}
             isRecording={isRecording}
           />
-          <FileUploadButton 
+          <FileUploadButton
             onFileSelect={handleFileSelect}
             isProcessing={isProcessing}
           />

@@ -1,4 +1,3 @@
-
 // Using browser's built-in speech recognition as a fallback
 // In a production environment, this would be replaced with a proper audio transcription API
 class FileTranscriptionService {
@@ -9,19 +8,19 @@ class FileTranscriptionService {
       // Simple mock for prototyping
       // Read the file and pretend we're transcribing it
       const reader = new FileReader();
-      
+
       reader.onload = (event) => {
         try {
           // For prototype purposes, we'll generate a simple mock transcription
           // based on the file name and size
           const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
           const fileSizeKb = Math.round(file.size / 1024);
-          
+
           // Generate mock transcription
           const mockTranscription = `
 ファイル「${fileName}」からの文字起こし結果:
 
-患者の〇〇さんを訪室しました。
+4階東412 ベッド1を訪室しました。
 バイタルは血圧が132/85、脈拍78、体温36.5度でした。
 患者は「今日は調子が良いです」と話されていました。
 SpO2は98%で安定しています。
@@ -40,11 +39,11 @@ SpO2は98%で安定しています。
           reject(new Error("ファイルの処理に失敗しました"));
         }
       };
-      
+
       reader.onerror = () => {
         reject(new Error("ファイルの読み込みに失敗しました"));
       };
-      
+
       // Start reading the file as text
       // In a real implementation, you'd send the file to an API
       reader.readAsText(file);
